@@ -3,12 +3,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![Travis Build
-Status](https://travis-ci.org/USCbiostats/xrnet.svg?branch=development)](https://travis-ci.org/USCbiostats/xrnet)
-[![Appveyor Build
-status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](https://ci.appveyor.com/project/gmweaver/xrnet)
-[![codecov](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://codecov.io/gh/USCbiostats/xrnet)
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check](https://github.com/USCbiostats/xrnet/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/USCbiostats/xrnet/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/USCbiostats/xrnet/branch/master/graph/badge.svg)](https://app.codecov.io/gh/USCbiostats/xrnet?branch=master)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/xrnet)](https://cran.r-project.org/package=xrnet)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.01761/status.svg)](https://doi.org/10.21105/joss.01761)
 
 # Introduction
@@ -16,11 +14,11 @@ status](https://ci.appveyor.com/api/projects/status/6pr8hlc4wg9vjcxd?svg=true)](
 The **xrnet** R package is an extension of regularized regression
 (i.e. ridge regression) that enables the incorporation of external data
 that may be informative for the effects of predictors on an outcome of
-interest. Let \(y\) be an n-dimensional observed outcome vector, \(X\)
-be a set of *p* potential predictors observed on the *n* observations,
-and \(Z\) be a set of *q* external features available for the *p*
-predictors. Our model builds off the standard two-level hierarchical
-regression model,
+interest. Let $y$ be an n-dimensional observed outcome vector, $X$ be a
+set of *p* potential predictors observed on the *n* observations, and
+$Z$ be a set of *q* external features available for the *p* predictors.
+Our model builds off the standard two-level hierarchical regression
+model,
 
 ![](man/figures/eqn1.gif)
 
@@ -38,11 +36,11 @@ following objective function (ignoring intercept terms):
 ![](man/figures/eqn3.gif)
 
 Note that our model allows for the predictor coefficients, beta, to
-shrink towards potentially informative values based on the matrix \(Z\).
+shrink towards potentially informative values based on the matrix $Z$.
 In the event the external data is not informative, we can shrink alpha
 towards zero, returning back to a standard regularized regression. To
 efficiently fit the model, we rewrite this convex optimization with the
-variable substitution \(gamma = beta - Z * alpha\). The problem is then
+variable substitution $gamma = beta - Z * alpha$. The problem is then
 solved as a standard regularized regression in which we allow the
 penalty value and type (ridge / lasso) to be variable-specific:
 
@@ -65,25 +63,20 @@ install.packages("xrnet")
 #### From Github (most up-to-date)
 
 1.  OS-specific prerequisites
-      - *Windows*: Install
-        [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an
-        R package)
-      - *Mac*: If using R version \>= 3.6.0, verify your GNU Fortran
-        version is \>= 6.1. If you have an older version, go
-        [here](https://cran.r-project.org/bin/macosx/tools/) to install
-        the required version
-2.  Install the R package [devtools](https://github.com/hadley/devtools)
-3.  Install the **xrnet** package with the *install\_github()* function
+    - *Windows*: Install
+      [RTools](https://cran.r-project.org/bin/windows/Rtools/) (not an R
+      package)
+    - *Mac*: Verify your GNU Fortran version is \>= 6.1. If you have an
+      older version, go
+      [here](https://cran.r-project.org/bin/macosx/tools/) to install
+      the required version.
+2.  Install the R package [devtools](https://github.com/r-lib/devtools)
+3.  Install the **xrnet** package with the *install_github()* function
     (optionally install potentially unstable development branch)
-
-<!-- end list -->
 
 ``` r
 # Master branch
 devtools::install_github("USCbiostats/xrnet")
-
-# Development branch
-devtools::install_github("USCbiostats/xrnet", ref = "development")
 ```
 
 # A First Example
@@ -124,15 +117,15 @@ predictors or external data, you can use the `define_penalty` function.
 This function allows you to configure the following regularization
 attributes:
 
-  - Regularization type
-      - Ridge = 0
-      - Elastic Net = (0, 1)
-      - Lasso / Quantile = 1 (additional parameter `quantile` used to
-        specify quantile, not currently implemented)
-  - Penalty path
-      - Number of penalty values in the full penalty path (default = 20)
-      - Ratio of min(penalty) / max(penalty)
-  - User-defined set of penalties
+- Regularization type
+  - Ridge = 0
+  - Elastic Net = (0, 1)
+  - Lasso / Quantile = 1 (additional parameter `quantile` used to
+    specify quantile, not currently implemented)
+- Penalty path
+  - Number of penalty values in the full penalty path (default = 20)
+  - Ratio of min(penalty) / max(penalty)
+- User-defined set of penalties
 
 As an example, we may want to apply a ridge penalty to the x variables
 and a lasso penalty to the external data variables. In addition, we may
@@ -144,8 +137,6 @@ follows.
     variables
 2)  `penalty_external` is used to specify the regularization for the
     external variables
-
-<!-- end list -->
 
 ``` r
 xrnet_model <- xrnet(
@@ -253,8 +244,14 @@ xrnet_model_big <- xrnet(
 
 all.equal(xrnet_model$beta0, xrnet_model_big$beta0)
 #> [1] TRUE
+```
+
+``` r
 all.equal(xrnet_model$betas, xrnet_model_big$betas)
 #> [1] TRUE
+```
+
+``` r
 all.equal(xrnet_model$alphas, xrnet_model_big$alphas)
 #> [1] TRUE
 ```
